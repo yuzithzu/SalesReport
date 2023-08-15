@@ -1,0 +1,241 @@
+<!DOCTYPE html><!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sales Report</title>
+  <style>
+    body {
+      font-family: "Helvetica Neue", sans-serif;
+      background-color: #f5f5f5;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+    }
+
+    .calculator {
+      background-color: #2c3e50;
+      border-radius: 12px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      padding: 20px;
+      width: 90%;
+      max-width: 400px;
+      color: #fff;
+      text-align: center;
+    }
+
+    h1 {
+      font-size: 24px;
+      margin-top: 0;
+    }
+
+    .date-picker,
+    .sales-input,
+    .expenses-input {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 10px;
+      border: none;
+      border-radius: 6px;
+      background-color: #34495e;
+      font-size: 18px;
+      color: #fff;
+      text-align: center;
+    }
+
+    .calculate-btn,
+    .show-report-btn,
+    .clear-btn {
+      display: block;
+      margin: 10px auto;
+      padding: 8px 16px;
+      background-color: #3498db;
+      color: #fff;
+      border: none;
+      border-radius: 6px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+
+    .result {
+      font-size: 18px;
+      margin-top: 10px;
+      color: #3498db;
+    }
+
+    .record-list {
+      margin-top: 20px;
+      padding: 10px;
+      border-radius: 6px;
+      background-color: #34495e;
+      display: none;
+      font-size: 16px;
+    }
+
+    .record-category {
+      background-color: #2c3e50;
+      border-radius: 6px;
+      padding: 5px;
+      margin: 10px 0;
+      text-align: left;
+      font-weight: bold;
+      color: #3498db;
+    }
+
+    .daily-sales-history li {
+      color: #fff;
+    }
+
+    /* New styles for centered design */
+    .date-time {
+      margin-top: 10px;
+      font-size: 16px;
+      color: #ccc;
+    }
+  </style>
+</head>
+<body>
+  <div class="calculator">
+    <h1>Sales Report</h1>
+    <input type="date" class="date-picker">
+    <input type="number" placeholder="Sales" class="sales-input">
+    <input type="number" placeholder="Expenses" class="expenses-input">
+    <button class="calculate-btn">Calculate</button>
+    <div class="result">
+      Total Profit: <span class="profit">PHP 0</span>
+    </div>
+    <button class="show-report-btn">Show Report</button>
+    <div class="record-list">
+      <div class="record-category">Daily Sales</div>
+      <ul class="daily-sales-history"></ul>
+      <button class="clear-btn daily-clear">Clear Daily</button>
+      <div class="record-category">Monthly Sales</div>
+      <div class="monthly-sales"></div>
+      <button class="clear-btn monthly-clear">Clear Monthly</button>
+      <div class="record-category">Yearly Sales</div>
+      <div class="yearly-sales"></div>
+      <button class="clear-btn yearly-clear">Clear Yearly</button>
+    </div>
+    <div class="date-time">
+      Current Date and Time: <span class="current-date-time"></span>
+    </div>
+  </div>
+  
+  <script>
+    const calculateBtn = document.querySelector('.calculate-btn');
+    const showReportBtn = document.querySelector('.show-report-btn');
+    const clearBtns = document.querySelectorAll('.clear-btn');
+    const recordList = document.querySelector('.record-list');
+    const dailySalesHistory = document.querySelector('.daily-sales-history');
+    const salesInput = document.querySelector('.sales-input');
+    const expensesInput = document.querySelector('.expenses-input');
+    const profitSpan = document.querySelector('.profit');
+    const currentDateElement = document.querySelector('.current-date-time');
+    const monthlySales = document.querySelector('.monthly-sales');
+    const yearlySales = document.querySelector('.yearly-sales');
+
+    function updateCurrentDateTime() {
+      const now = new Date();
+      const formattedDate = now.toLocaleString();
+      currentDateElement.textContent = formattedDate;
+    }
+
+    updateCurrentDateTime();
+    setInterval(updateCurrentDateTime, 1000);
+
+    let dailyTotal = 0;
+    let monthlySalesData = {};
+    let yearlySalesData = {};
+
+    calculateBtn.addEventListener('click', () => {
+      const sales = parseFloat(salesInput.value) || 0;
+      const expenses = parseFloat(expensesInput.value) || 0;
+      const profit = sales - expenses;
+
+      profitSpan.textContent = `Total Profit: PHP ${profit.toFixed(2)}`;
+      dailyTotal += sales;
+      updateCurrentDateTime();
+
+      const now = new Date();
+      const currentMonth = now.toLocaleString('en-US', { month: 'long' });
+      const currentYear = now.getFullYear();
+
+      if (!monthlySalesData[currentYear]) {
+        monthlySalesData[currentYear] = {};
+      }
+      
+      if (!monthlySalesData[currentYear][currentMonth]) {
+        monthlySalesData[currentYear][currentMonth] = 0;
+      }
+      
+      monthlySalesData[currentYear][currentMonth] += sales;
+
+      if (!yearlySalesData[currentYear]) {
+        yearlySalesData[currentYear] = 0;
+      }
+      yearlySalesData[currentYear] += sales;
+
+      const salesRecord = document.createElement('li');
+      const formattedDate = now.toLocaleDateString();
+      salesRecord.textContent = `${formattedDate}: PHP ${sales.toFixed(2)}`;
+      dailySalesHistory.appendChild(salesRecord);
+    });
+
+    showReportBtn.addEventListener('click', () => {
+      dailySalesHistory.textContent = '';
+      monthlySales.innerHTML = '';
+      yearlySales.innerHTML = '';
+
+      for (const year in yearlySalesData) {
+        const yearSummary = document.createElement('div');
+        yearSummary.className = 'record-category';
+        yearSummary.textContent = `${year} Sales: PHP ${yearlySalesData[year].toFixed(2)}`;
+        yearlySales.appendChild(yearSummary);
+        
+        const yearlyMonths = monthlySalesData[year];
+        for (const month in yearlyMonths) {
+          const monthSummary = document.createElement('div');
+          monthSummary.className = 'record-category';
+          monthSummary.textContent = `${month} ${year} Sales: PHP ${yearlyMonths[month].toFixed(2)}`;
+          monthlySales.appendChild(monthSummary);
+        }
+      }
+
+      recordList.style.display = 'block';
+    });
+
+    clearBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        if (btn.classList.contains('daily-clear')) {
+          dailyTotal = 0;
+          dailySalesHistory.textContent = '';
+        }
+        if (btn.classList.contains('monthly-clear')) {
+          monthlySalesData = {};
+          monthlySales.textContent = '';
+        }
+        if (btn.classList.contains('yearly-clear')) {
+          yearlySalesData = {};
+          yearlySales.textContent = '';
+        }
+        recordList.style.display = 'none';
+      });
+    });
+  </script>
+</body>
+</html>
+
+<html>
+  <head>
+    <title>Hello, World!</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+      <h1 class="title">Hello World! </h1>
+      <p id="currentTime"></p>
+      <script src="script.js"></script>
+  </body>
+</html>
