@@ -1,240 +1,216 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Sales Report</title>
-  <style>
-    body {
-      margin: 0;
-      padding: 0;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      min-height: 100vh;
-      background-color: #f0f0f0;
-    }
-
-    .background {
-      background-color: rgba(0, 0, 0, 0.6);
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      z-index: 9999;
-    }
-
-    .calculator {
-      background-color: #2c2c2e;
-      border-radius: 12px;
-      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-      padding: 20px;
-      width: 90%;
-      max-width: 400px;
-      color: #fff;
-      text-align: center;
-      position: relative;
-      animation: slide-up 0.5s ease-in-out;
-    }
-
-    @keyframes slide-up {
-      from {
-        opacity: 0;
-        transform: translateY(50px);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
-    }
-
-    h1 {
-      font-size: 24px;
-      margin: 0 0 20px;
-    }
-
-    input[type="date"],
-    input[type="number"] {
-      width: 100%;
-      padding: 10px;
-      margin-bottom: 10px;
-      border: none;
-      border-radius: 6px;
-      background-color: #546e7a;
-      font-size: 16px;
-      color: #fff;
-      text-align: center;
-    }
-
-    .calculate-btn,
-    .clear-btn {
-      display: block;
-      margin: 10px auto;
-      padding: 8px 16px;
-      background-color: #2196f3;
-      color: #fff;
-      border: none;
-      border-radius: 6px;
-      font-size: 16px;
-      cursor: pointer;
-    }
-
-    .result {
-      font-size: 18px;
-      margin: 20px 0;
-      color: #2196f3;
-    }
-
-    .record-list {
-      margin-top: 20px;
-      padding: 10px;
-      border-radius: 6px;
-      background-color: #37474f;
-      font-size: 16px;
-    }
-
-    .record-category {
-      background-color: #263238;
-      border-radius: 6px;
-      padding: 5px;
-      margin: 10px 0;
-      text-align: left;
-      font-weight: bold;
-      color: #2196f3;
-    }
-
-    .sales-history {
-      padding: 10px;
-      border-radius: 6px;
-      background-color: #263238;
-      font-size: 16px;
-    }
-
-    .sales-record {
-      margin: 5px 0;
-      padding: 5px;
-      border-radius: 6px;
-      background-color: #37474f;
-      text-align: left;
-      color: #fff;
-    }
-
-    .date-time {
-      margin-top: 10px;
-      font-size: 16px;
-      color: #bbb;
-    }
-  </style>
+    <title>SALES REPORT</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f2f2f2;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            max-width: 500px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #1f1f1f;
+            color: #fff;
+            border-radius: 5px;
+        }
+        .header {
+            text-align: center;
+            font-size: 24px;
+            margin-bottom: 20px;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        input[type="date"],
+        input[type="number"] {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 3px;
+            font-size: 14px;
+        }
+        .button-group {
+            text-align: center;
+            margin-top: 10px;
+        }
+        .button-group button {
+            padding: 8px 20px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+            margin-right: 10px;
+        }
+        .report {
+            border: 1px solid #ccc;
+            padding: 15px;
+            margin-top: 20px;
+        }
+        .report strong {
+            display: block;
+            font-size: 18px;
+            margin-bottom: 10px;
+        }
+        .date-time {
+            text-align: center;
+            font-size: 18px;
+            margin-top: 20px;
+        }
+    </style>
 </head>
 <body>
-  <div class="background">
-    <div class="calculator">
-      <h1>Sales Report</h1>
-      <input type="date" class="date-picker">
-      <input type="number" placeholder="Sales" class="sales-input">
-      <input type="number" placeholder="Expenses" class="expenses-input">
-      <button class="calculate-btn">Calculate</button>
-      <div class="result">
-        Total Profit: <span class="profit">PHP 0</span>
-      </div>
-      <div class="record-list">
-        <div class="record-category">Daily Sales</div>
-        <div class="sales-history daily-sales-history"></div>
-        <button class="clear-btn daily-clear">Clear Daily</button>
-      </div>
-      <div class="record-list">
-        <div class="record-category">Monthly Sales</div>
-        <div class="sales-history monthly-sales-history"></div>
-        <button class="clear-btn monthly-clear">Clear Monthly</button>
-      </div>
-      <div class="record-list">
-        <div class="record-category">Yearly Sales</div>
-        <div class="sales-history yearly-sales-history"></div>
-        <button class="clear-btn yearly-clear">Clear Yearly</button>
-      </div>
-      <div class="date-time">
-        Current Date and Time: <span class="current-date-time"></span>
-      </div>
+    <div class="container">
+        <div class="header">SALES REPORT</div>
+        <div class="form-group">
+            <label for="datepicker">Select Date:</label>
+            <input type="date" id="datepicker">
+        </div>
+        <div class="form-group">
+            <label for="sales">Sales (&#x20B1;):</label>
+            <input type="number" id="sales" step="0.01">
+        </div>
+        <div class="form-group">
+            <label for="expenses">Expenses (&#x20B1;):</label>
+            <input type="number" id="expenses" step="0.01">
+        </div>
+        <div class="button-group">
+            <button onclick="calculateTotal()">Calculate Total Profit</button>
+        </div>
+        <div id="total" class="report"></div>
+        
+        <div class="button-group">
+            <button onclick="generateDailyReport()">Generate Daily Report</button>
+            <button onclick="generateMonthlyReport()">Generate Monthly Report</button>
+            <button onclick="generateYearlyReport()">Generate Yearly Report</button>
+            <button onclick="clearDailyReport()">Clear Daily Report</button>
+            <button onclick="clearMonthlyReport()">Clear Monthly Report</button>
+            <button onclick="clearYearlyReport()">Clear Yearly Report</button>
+        </div>
+        <div class="report" id="daily-report"></div>
+        <div class="report" id="monthly-report"></div>
+        <div class="report" id="yearly-report"></div>
+        
+        <div class="date-time" id="date-time"></div>
     </div>
-  </div>
-  
-  <script>
-    const calculateBtn = document.querySelector('.calculate-btn');
-    const clearBtns = document.querySelectorAll('.clear-btn');
-    const dailySalesHistory = document.querySelector('.daily-sales-history');
-    const monthlySalesHistory = document.querySelector('.monthly-sales-history');
-    const yearlySalesHistory = document.querySelector('.yearly-sales-history');
-    const salesInput = document.querySelector('.sales-input');
-    const expensesInput = document.querySelector('.expenses-input');
-    const profitSpan = document.querySelector('.profit');
-    const currentDateElement = document.querySelector('.current-date-time');
-
-    function updateCurrentDateTime() {
-      const now = new Date();
-      const formattedDate = now.toLocaleString();
-      currentDateElement.textContent = formattedDate;
-    }
-
-    updateCurrentDateTime();
-    setInterval(updateCurrentDateTime, 1000);
-
-    let dailyTotal = 0;
-    let monthlyTotal = 0;
-    let yearlyTotal = 0;
-
-    calculateBtn.addEventListener('click', () => {
-      const sales = parseFloat(salesInput.value) || 0;
-      const expenses = parseFloat(expensesInput.value) || 0;
-      const profit = sales - expenses;
-
-      profitSpan.textContent = `Total Profit: PHP ${profit.toFixed(2)}`;
-      dailyTotal += sales;
-      updateCurrentDateTime();
-
-      const now = new Date();
-      const formattedDate = now.toLocaleDateString();
-      const salesRecord = document.createElement('div');
-      salesRecord.className = 'sales-record';
-      salesRecord.textContent = `${formattedDate}: PHP ${sales.toFixed(2)}`;
-      dailySalesHistory.appendChild(salesRecord);
-
-      // Update monthly total
-      monthlyTotal += sales;
-      const formattedMonth = now.toLocaleString('default', { month: 'long' });
-      const monthlySalesRecord = document.createElement('div');
-      monthlySalesRecord.className = 'sales-record';
-      monthlySalesRecord.textContent = `${formattedMonth}: PHP ${monthlyTotal.toFixed(2)}`;
-      monthlySalesHistory.appendChild(monthlySalesRecord);
-
-      // Update yearly total
-      yearlyTotal += sales;
-      const formattedYear = now.getFullYear();
-      const yearlySalesRecord = document.createElement('div');
-      yearlySalesRecord.className = 'sales-record';
-      yearlySalesRecord.textContent = `${formattedYear}: PHP ${yearlyTotal.toFixed(2)}`;
-      yearlySalesHistory.appendChild(yearlySalesRecord);
-    });
-
-    clearBtns.forEach(btn => {
-      btn.addEventListener('click', () => {
-        if (btn.classList.contains('daily-clear')) {
-          dailyTotal = 0;
-          dailySalesHistory.textContent = '';
+    
+    <script>
+        var dailyReports = {};
+        var monthlyReports = {};
+        var yearlyReports = {};
+        
+        function calculateTotal() {
+            var sales = parseFloat(document.getElementById("sales").value);
+            var expenses = parseFloat(document.getElementById("expenses").value);
+            var total = sales - expenses;
+            document.getElementById("total").innerHTML = "<strong>Total Profit:</strong> &#x20B1;" + total.toFixed(2);
+            
+            var selectedDate = document.getElementById("datepicker").value;
+            dailyReports[selectedDate] = {
+                sales: sales,
+                totalProfit: total.toFixed(2)
+            };
         }
-        if (btn.classList.contains('monthly-clear')) {
-          monthlyTotal = 0;
-          monthlySalesHistory.textContent = '';
+        
+        function generateDailyReport() {
+            var dailyReport = "";
+            
+            for (var date in dailyReports) {
+                dailyReport += "<strong>Date: " + date + "</strong><br>";
+                dailyReport += "Total Profit: &#x20B1;" + dailyReports[date].totalProfit + "<br><br>";
+            }
+            
+            document.getElementById("daily-report").innerHTML = dailyReport;
         }
-        if (btn.classList.contains('yearly-clear')) {
-          yearlyTotal = 0;
-          yearlySalesHistory.textContent = '';
+        
+        function generateMonthlyReport() {
+            for (var date in dailyReports) {
+                var parts = date.split("-");
+                var year = parts[0];
+                var month = parts[1];
+                var totalProfit = parseFloat(dailyReports[date].totalProfit);
+                
+                if (!monthlyReports[year]) {
+                    monthlyReports[year] = {};
+                }
+                
+                if (!monthlyReports[year][month]) {
+                    monthlyReports[year][month] = 0;
+                }
+                
+                monthlyReports[year][month] += totalProfit;
+            }
+            
+            var monthlyReport = "<strong>Monthly Report</strong><br>";
+            
+            for (var year in monthlyReports) {
+                monthlyReport += "<strong>" + year + "</strong><br>";
+                for (var month in monthlyReports[year]) {
+                    var monthName = getMonthName(parseInt(month));
+                    monthlyReport += monthName + ": &#x20B1;" + monthlyReports[year][month].toFixed(2) + "<br>";
+                }
+            }
+            
+            document.getElementById("monthly-report").innerHTML = monthlyReport;
         }
-      });
-    });
-  </script>
+        
+        function generateYearlyReport() {
+            for (var year in monthlyReports) {
+                if (!yearlyReports[year]) {
+                    yearlyReports[year] = 0;
+                }
+                
+                for (var month in monthlyReports[year]) {
+                    yearlyReports[year] += monthlyReports[year][month];
+                }
+            }
+            
+            var yearlyReport = "<strong>Yearly Report</strong><br>";
+            
+            for (var year in yearlyReports) {
+                yearlyReport += "<strong>" + year + "</strong>: &#x20B1;" + yearlyReports[year].toFixed(2) + "<br>";
+            }
+            
+            document.getElementById("yearly-report").innerHTML = yearlyReport;
+        }
+        
+        function clearDailyReport() {
+            dailyReports = {};
+            document.getElementById("daily-report").innerHTML = "";
+        }
+        
+        function clearMonthlyReport() {
+            monthlyReports = {};
+            document.getElementById("monthly-report").innerHTML = "";
+        }
+        
+        function clearYearlyReport() {
+            yearlyReports = {};
+            document.getElementById("yearly-report").innerHTML = "";
+        }
+        
+        function getMonthName(month) {
+            var monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+            return monthNames[month - 1];
+        }
+        
+        function updateDateTime() {
+            var now = new Date();
+            var formattedDateTime = now.toLocaleString();
+            document.getElementById("date-time").innerHTML = formattedDateTime;
+        }
+        
+        updateDateTime();
+        setInterval(updateDateTime, 1000);
+    </script>
 </body>
 </html>
