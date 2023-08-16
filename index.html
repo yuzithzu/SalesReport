@@ -138,38 +138,42 @@
         }
         
         function generateDailyReport() {
-            hideReports();
             var dailyReportDiv = document.getElementById("daily-report");
             var dailyReport = "";
+
             for (var date in dailyReports) {
                 dailyReport += "<strong>Date: " + date + "</strong><br>";
                 dailyReport += "Total Profit: &#x20B1;" + dailyReports[date].totalProfit + "<br><br>";
             }
+
+            hideReports();
             dailyReportDiv.innerHTML = dailyReport;
             dailyReportDiv.classList.remove("hide");
         }
         
         function generateMonthlyReport() {
-            hideReports();
             var monthlyReportDiv = document.getElementById("monthly-report");
+            var monthlyReport = "";
+
             for (var date in dailyReports) {
                 var parts = date.split("-");
                 var year = parts[0];
                 var month = parts[1];
                 var totalProfit = parseFloat(dailyReports[date].totalProfit);
-                
+
                 if (!monthlyReports[year]) {
                     monthlyReports[year] = {};
                 }
-                
+
                 if (!monthlyReports[year][month]) {
                     monthlyReports[year][month] = 0;
                 }
-                
+
                 monthlyReports[year][month] += totalProfit;
             }
-            
-            var monthlyReport = "<strong>Monthly Report</strong><br>";
+
+            hideReports();
+            monthlyReport += "<strong>Monthly Report</strong><br>";
             for (var year in monthlyReports) {
                 monthlyReport += "<strong>" + year + "</strong><br>";
                 for (var month in monthlyReports[year]) {
@@ -177,46 +181,50 @@
                     monthlyReport += monthName + ": &#x20B1;" + monthlyReports[year][month].toFixed(2) + "<br>";
                 }
             }
+
             monthlyReportDiv.innerHTML = monthlyReport;
             monthlyReportDiv.classList.remove("hide");
         }
-        
+
         function generateYearlyReport() {
-            hideReports();
             var yearlyReportDiv = document.getElementById("yearly-report");
+            var yearlyReport = "";
+
             for (var year in monthlyReports) {
                 if (!yearlyReports[year]) {
                     yearlyReports[year] = 0;
                 }
-                
+
                 for (var month in monthlyReports[year]) {
                     yearlyReports[year] += monthlyReports[year][month];
                 }
             }
-            
-            var yearlyReport = "<strong>Yearly Report</strong><br>";
+
+            hideReports();
+            yearlyReport += "<strong>Yearly Report</strong><br>";
             for (var year in yearlyReports) {
                 yearlyReport += "<strong>" + year + "</strong>: &#x20B1;" + yearlyReports[year].toFixed(2) + "<br>";
             }
+
             yearlyReportDiv.innerHTML = yearlyReport;
             yearlyReportDiv.classList.remove("hide");
         }
-        
+
         function clearDailyReport() {
             dailyReports = {};
             document.getElementById("daily-report").innerHTML = "";
         }
-        
+
         function clearMonthlyReport() {
             monthlyReports = {};
             document.getElementById("monthly-report").innerHTML = "";
         }
-        
+
         function clearYearlyReport() {
             yearlyReports = {};
             document.getElementById("yearly-report").innerHTML = "";
         }
-        
+
         function hideReports() {
             var reportDivs = document.querySelectorAll(".report");
             for (var i = 0; i < reportDivs.length; i++) {
@@ -225,18 +233,18 @@
                 }
             }
         }
-        
+
         function getMonthName(month) {
             var monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
             return monthNames[month - 1];
         }
-        
+
         function updateDateTime() {
             var now = new Date();
             var formattedDateTime = now.toLocaleString();
             document.getElementById("date-time").innerHTML = formattedDateTime;
         }
-        
+
         updateDateTime();
         setInterval(updateDateTime, 1000);
     </script>
