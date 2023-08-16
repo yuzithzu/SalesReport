@@ -14,7 +14,7 @@
             min-height: 100vh;
         }
         .container {
-            width: 320px;
+            width: 400px;
             background-color: #f9f9f9;
             border-radius: 10px;
             padding: 20px;
@@ -47,12 +47,7 @@
             text-align: center;
             margin-top: 10px;
             display: flex;
-            justify-content: center;
-        }
-        .button-column {
-            display: flex;
-            flex-direction: column;
-            margin-right: 10px;
+            justify-content: space-between;
         }
         .button-group button {
             flex: 1;
@@ -62,12 +57,13 @@
             border: none;
             border-radius: 3px;
             cursor: pointer;
-            margin-bottom: 10px;
+            margin-right: 5px;
         }
         .report {
             border: 1px solid #ccc;
             padding: 15px;
             margin-top: 20px;
+            font-size: 14px;
         }
         .report strong {
             display: block;
@@ -79,6 +75,10 @@
             font-size: 18px;
             margin-top: 20px;
             color: #777;
+        }
+        /* Add a class to hide report divs */
+        .hide {
+            display: none;
         }
     </style>
 </head>
@@ -98,24 +98,24 @@
             <input type="number" id="expenses" step="0.01">
         </div>
         <div class="button-group">
-            <div class="button-column">
-                <button onclick="calculateTotal()">Calculate Total Profit</button>
-            </div>
-            <div class="button-column">
-                <button onclick="generateDailyReport()">Generate Daily Report</button>
-                <button onclick="generateMonthlyReport()">Generate Monthly Report</button>
-                <button onclick="generateYearlyReport()">Generate Yearly Report</button>
-            </div>
-            <div class="button-column">
-                <button onclick="clearDailyReport()">Clear Daily Report</button>
-                <button onclick="clearMonthlyReport()">Clear Monthly Report</button>
-                <button onclick="clearYearlyReport()">Clear Yearly Report</button>
-            </div>
+            <button onclick="calculateTotal()">Calculate Total Profit</button>
         </div>
         <div id="total" class="report"></div>
-        <div class="report" id="daily-report"></div>
-        <div class="report" id="monthly-report"></div>
-        <div class="report" id="yearly-report"></div>
+        <div class="button-group">
+            <button onclick="generateDailyReport()">Generate Daily Report</button>
+            <button onclick="clearDailyReport()">Clear Daily Report</button>
+        </div>
+        <div class="report hide" id="daily-report"></div>
+        <div class="button-group">
+            <button onclick="generateMonthlyReport()">Generate Monthly Report</button>
+            <button onclick="clearMonthlyReport()">Clear Monthly Report</button>
+        </div>
+        <div class="report hide" id="monthly-report"></div>
+        <div class="button-group">
+            <button onclick="generateYearlyReport()">Generate Yearly Report</button>
+            <button onclick="clearYearlyReport()">Clear Yearly Report</button>
+        </div>
+        <div class="report hide" id="yearly-report"></div>
         <div class="date-time" id="date-time"></div>
     </div>
     
@@ -138,17 +138,20 @@
         }
         
         function generateDailyReport() {
+            hideReports();
+            var dailyReportDiv = document.getElementById("daily-report");
             var dailyReport = "";
-            
             for (var date in dailyReports) {
                 dailyReport += "<strong>Date: " + date + "</strong><br>";
                 dailyReport += "Total Profit: &#x20B1;" + dailyReports[date].totalProfit + "<br><br>";
             }
-            
-            document.getElementById("daily-report").innerHTML = dailyReport;
+            dailyReportDiv.innerHTML = dailyReport;
+            dailyReportDiv.classList.remove("hide");
         }
         
         function generateMonthlyReport() {
+            hideReports();
+            var monthlyReportDiv = document.getElementById("monthly-report");
             for (var date in dailyReports) {
                 var parts = date.split("-");
                 var year = parts[0];
@@ -167,7 +170,6 @@
             }
             
             var monthlyReport = "<strong>Monthly Report</strong><br>";
-            
             for (var year in monthlyReports) {
                 monthlyReport += "<strong>" + year + "</strong><br>";
                 for (var month in monthlyReports[year]) {
@@ -175,11 +177,13 @@
                     monthlyReport += monthName + ": &#x20B1;" + monthlyReports[year][month].toFixed(2) + "<br>";
                 }
             }
-            
-            document.getElementById("monthly-report").innerHTML = monthlyReport;
+            monthlyReportDiv.innerHTML = monthlyReport;
+            monthlyReportDiv.classList.remove("hide");
         }
         
         function generateYearlyReport() {
+            hideReports();
+            var yearlyReportDiv = document.getElementById("yearly-report");
             for (var year in monthlyReports) {
                 if (!yearlyReports[year]) {
                     yearlyReports[year] = 0;
@@ -191,12 +195,11 @@
             }
             
             var yearlyReport = "<strong>Yearly Report</strong><br>";
-            
             for (var year in yearlyReports) {
                 yearlyReport += "<strong>" + year + "</strong>: &#x20B1;" + yearlyReports[year].toFixed(2) + "<br>";
             }
-            
-            document.getElementById("yearly-report").innerHTML = yearlyReport;
+            yearlyReportDiv.innerHTML = yearlyReport;
+            yearlyReportDiv.classList.remove("hide");
         }
         
         function clearDailyReport() {
@@ -212,6 +215,13 @@
         function clearYearlyReport() {
             yearlyReports = {};
             document.getElementById("yearly-report").innerHTML = "";
+        }
+        
+        function hideReports() {
+            var reportDivs = document.querySelectorAll(".report");
+            for (var i = 0; i < reportDivs.length; i++) {
+                reportDivs[i].classList.add("hide");
+            }
         }
         
         function getMonthName(month) {
